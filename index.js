@@ -91,6 +91,7 @@ async function run(){
         const userCollection = client.db('doctors_portal').collection('users');
         const doctorCollection = client.db('doctors_portal').collection('doctors');
         const paymentCollection = client.db('doctors_portal').collection('payments');
+        const commentCollection = client.db('doctors_portal').collection('comments');
 
         const verifyAdmin = async (req, res, next) => {
           const requester = req.decoded.email;
@@ -123,6 +124,8 @@ async function run(){
             const services = await cursor.toArray();
             res.send(services);
         });
+
+
 
 // api for data load in user
         app.get('/user',   async (req, res) => {
@@ -272,6 +275,15 @@ async function run(){
             const result = await doctorCollection.insertOne(doctor);
             res.send(result);
           });
+
+          
+        // comment
+        app.post('/comment', async (req, res) => {
+          const comment = req.body;
+          const result = await commentCollection.insertOne(comment);
+          res.send(result);
+        });
+
 
           app.delete('/doctor/:email', verifyJWT, verifyAdmin, async (req, res) => {
             const email = req.params.email;
