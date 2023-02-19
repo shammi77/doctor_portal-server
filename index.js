@@ -92,6 +92,7 @@ async function run(){
         const doctorCollection = client.db('doctors_portal').collection('doctors');
         const paymentCollection = client.db('doctors_portal').collection('payments');
         const commentCollection = client.db('doctors_portal').collection('comments');
+        const medicinCollection = client.db('doctors_portal').collection('medicin');
 
         const verifyAdmin = async (req, res, next) => {
           const requester = req.decoded.email;
@@ -133,15 +134,15 @@ async function run(){
           res.send(users);
         });
 
-        app.delete('/user/admin/:email', verifyJWT,verifyAdmin, async (req, res)=>{
-          const email = req.params.email;
-      const filter = { email: email };
-      const updateDoc = {
-        $set: { role: 'admin' },
-      };
-      const result = await userCollection.updateOne(filter, updateDoc);
-      res.send(result);
-    })
+    //     app.delete('/user/admin/:email', verifyJWT, async (req, res)=>{
+    //       const email = req.params.email;
+    //   const filter = { email: email };
+    //   const updateDoc = {
+    //     $set: { role: 'admin' },
+    //   };
+    //   const result = await userCollection.updateOne(filter, updateDoc);
+    //   res.send(result);
+    // })
 // admin route 
         app.get('/admin/:email', async(req, res) =>{
           const email = req.params.email;
@@ -284,6 +285,12 @@ async function run(){
           res.send(result);
         });
 
+        app.post('/medicin', async (req, res) => {
+          const medicin = req.body;
+          const result = await medicinCollection.insertOne(medicin);
+          res.send(result);
+        });
+
 
           app.delete('/doctor/:email', verifyJWT, verifyAdmin, async (req, res) => {
             const email = req.params.email;
@@ -291,6 +298,14 @@ async function run(){
             const result = await doctorCollection.deleteOne(filter);
             res.send(result);
           });
+
+          app.delete('/user/:email', verifyJWT, verifyAdmin, async (req, res) => {
+            const email = req.params.email;
+            const filter = {email: email};
+            const result = await userCollection.deleteOne(filter);
+            res.send(result);
+          });
+          
 
 
     }
